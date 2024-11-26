@@ -11,7 +11,7 @@ public class UserDao {
 	private String LOGIN_QUERY = "SELECT id FROM users where name = ? AND password = ?";
 	private String REGISTER_QUERY = "INSERT INTO users (name, password) VALUES (?, ?)";
 	
-	public Integer loginUser(User user) throws SQLException {
+	public User loginUser(User user) throws SQLException {
 		
 		try (Connection conn = DBConnectionPool.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(LOGIN_QUERY);
@@ -23,7 +23,8 @@ public class UserDao {
 				
             if (rs.next()) {
                 int userId = rs.getInt("id");
-                return userId;
+                user.setId(userId);
+                return user;
             }
         
 	   }

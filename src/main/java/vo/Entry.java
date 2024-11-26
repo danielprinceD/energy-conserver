@@ -6,6 +6,15 @@ public class Entry {
     private Double power;
     private Double voltage;
     private String dateTime;
+    private Double amphere;
+    
+    public Double getAmphere() {
+    	return amphere;
+    }
+    
+    public void setAmphere(Double amphere) {
+    	this.amphere = amphere;
+    }
 
     public Integer getEntryId() {
         return entryId;
