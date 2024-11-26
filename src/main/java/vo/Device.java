@@ -2,8 +2,8 @@ package vo;
 
 public class Device {
     private Integer deviceId;
-    private Integer deviceName;
-    private Integer buildingBlockId;
+    private String deviceName;
+    private Integer blockId;
 
     public Integer getDeviceId() {
         return deviceId;
@@ -13,19 +13,19 @@ public class Device {
         this.deviceId = deviceId;
     }
 
-    public Integer getDeviceName() {
+    public String getDeviceName() {
         return deviceName;
     }
 
-    public void setDeviceName(Integer deviceName) {
+    public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
     }
 
-    public Integer getBuildingBlockId() {
-        return buildingBlockId;
+    public Integer getBlockId() {
+        return blockId;
     }
 
-    public void setBuildingBlockId(Integer buildingBlockId) {
-        this.buildingBlockId = buildingBlockId;
+    public void setBlockId(Integer blockId) {
+        this.blockId = blockId;
     }
 }

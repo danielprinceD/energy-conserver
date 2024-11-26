@@ -24,7 +24,7 @@ public class BuildingDao {
 			+ "                       \"GROUP BY BB.building_id, BB.block_id, BBOWN.user_id, U.name";
 	
 	
-	
+	 String BUILDING_LIST_QUERY = "SELECT building_id, name, location FROM building WHERE createdBy = ?";
 	
 	 public Boolean createBuilding(List<Building> buildings) {
 
@@ -168,7 +168,35 @@ public class BuildingDao {
 
 	    }
 	 
+	 public List<Building> getBuildingList(Integer userId) {
+	        List<Building> buildings = new ArrayList<Building>();
 
+
+	        try (Connection conn = DBConnectionPool.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(BUILDING_LIST_QUERY)) {
+
+	            stmt.setInt(1, userId);
+
+	            try (ResultSet rs = stmt.executeQuery()) {
+
+	                while (rs.next()) {
+	                	
+	                    Building building = new Building();
+	                    building.setBuildingId(rs.getInt("building_id"));
+	                    building.setBuildingName(rs.getString("name"));
+	                    building.setBuildingLocation(rs.getString("location"));
+	                    building.setCreatedBy(userId); 
+
+	                    buildings.add(building);
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace(); 
+	        }
+
+	        return buildings;
+	    }
+	 
 	 
 	 
 }
