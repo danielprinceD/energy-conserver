@@ -1,32 +1,33 @@
 package vo;
 
 public class Building {
-	private Integer buildingId;
-	private String name;
-	private String location;
-	private Integer createdBy;
-	
-	public Integer getBuildingId() {
+    private Integer buildingId;
+    private String buildingName;
+    private String buildingLocation;
+    private Integer createdBy;
+
+    public Integer getBuildingId() {
         return buildingId;
     }
+
     public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
     }
 
-    public String getName() {
-        return name;
+    public String getBuildingName() {
+        return buildingName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
     }
 
-    public String getLocation() {
-        return location;
+    public String getBuildingLocation() {
+        return buildingLocation;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setBuildingLocation(String buildingLocation) {
+        this.buildingLocation = buildingLocation;
     }
 
     public Integer getCreatedBy() {
@@ -36,5 +37,4 @@ public class Building {
     public void setCreatedBy(Integer createdBy) {
         this.createdBy = createdBy;
     }
-	
 }

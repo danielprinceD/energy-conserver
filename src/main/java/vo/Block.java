@@ -1,11 +1,11 @@
 package vo;
 
 public class Block {
-	private Integer blockId;
-	private String name;
-	private Integer ownerId;
-	
-	public Integer getBlockId() {
+    private Integer blockId;
+    private String blockName;
+    private Integer ownerId;
+
+    public Integer getBlockId() {
         return blockId;
     }
 
@@ -13,12 +13,12 @@ public class Block {
         this.blockId = blockId;
     }
 
-    public String getName() {
-        return name;
+    public String getBlockName() {
+        return blockName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
     }
 
     public Integer getOwnerId() {
@@ -28,5 +28,5 @@ public class Block {
     public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
     }
-	
 }
+

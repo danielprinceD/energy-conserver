@@ -2,7 +2,7 @@ package vo;
 
 public class User {
     private Integer userId;
-    private String name;
+    private String userName;
     private String password;
 
     public Integer getId() {
@@ -13,12 +13,12 @@ public class User {
         this.userId = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String name) {
+        this.userName = name;
     }
 
     public String getPassword() {
