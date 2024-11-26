@@ -8,8 +8,8 @@ import vo.User;
 
 public class UserDao {
 	
-	protected String LOGIN_QUERY = "SELECT id FROM users where name = ? AND password = ?";
-	protected String REGISTER_QUERY = "INSERT INTO users (name, password) VALUES (?, ?)";
+	private String LOGIN_QUERY = "SELECT id FROM users where name = ? AND password = ?";
+	private String REGISTER_QUERY = "INSERT INTO users (name, password) VALUES (?, ?)";
 	
 	public Integer loginUser(User user) throws SQLException {
 		

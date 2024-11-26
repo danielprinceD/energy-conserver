@@ -8,9 +8,9 @@ import org.apache.commons.dbcp2.BasicDataSource;
 public class DBConnectionPool {
 	public static BasicDataSource dataSource;
 	
-	protected static String USERNAME = "root";
-	protected static String PASSWORD = "password";
-	protected static String DATABASE_NAME = "energy";
+	private static String USERNAME = "root";
+	private static String PASSWORD = "password";
+	private static String DATABASE_NAME = "energy";
 	
 	static {
 		

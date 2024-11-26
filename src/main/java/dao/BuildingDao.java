@@ -11,8 +11,8 @@ import vo.Building;
 
 public class BuildingDao {
 	
-	protected static String CREATE_BUILDING_QUERY = "INSERT INTO building (name, location, created_by) VALUES (?, ?, ?)";
-	protected static String GET_BUILDING_DETAIL = "SELECT BB.building_id, BB.block_id, BLK.name AS block_name, \" +\n"
+	private static String CREATE_BUILDING_QUERY = "INSERT INTO building (name, location, created_by) VALUES (?, ?, ?)";
+	private static String GET_BUILDING_DETAIL = "SELECT BB.building_id, BB.block_id, BLK.name AS block_name, \" +\n"
 			+ "                       \"BBOWN.user_id AS owner_id, U.name AS owner_name, \" +\n"
 			+ "                       \"COUNT(BLKDEV.device_id) AS total_devices \" +\n"
 			+ "                       \"FROM block_device AS BLKDEV \" +\n"
