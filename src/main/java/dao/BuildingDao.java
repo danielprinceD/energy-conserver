@@ -10,21 +10,20 @@ import vo.Building;
 public class BuildingDao {
 	
 	private static String CREATE_BUILDING_QUERY = "INSERT INTO building (name, location, created_by) VALUES (?, ?, ?)";
-	private static String GET_BUILDING_DETAIL = "SELECT BB.building_id, BB.block_id, BLK.name AS block_name, \" +\n"
-			+ "                       \"BBOWN.user_id AS owner_id, U.name AS owner_name, \" +\n"
-			+ "                       \"COUNT(BLKDEV.device_id) AS total_devices \" +\n"
-			+ "                       \"FROM block_device AS BLKDEV \" +\n"
-			+ "                       \"LEFT JOIN building_block AS BB ON BB.build_block_id = BLKDEV.building_block_id \" +\n"
-			+ "                       \"LEFT JOIN block AS BLK ON BLK.block_id = BB.block_id \" +\n"
-			+ "                       \"LEFT JOIN building_block_ownership AS BBOWN ON BBOWN.building_block_id = BLKDEV.building_block_id \" +\n"
-			+ "                       \"LEFT JOIN users AS U ON U.id = BBOWN.user_id \" +\n"
-			+ "                       \"WHERE BB.building_id = ? \" +\n"
-			+ "                       \"GROUP BY BB.building_id, BB.block_id, BBOWN.user_id, U.name";
+	private static String GET_BUILDING_DETAIL = "SELECT BB.building_id, BB.block_id, BLK.name AS block_name, " +
+		    "BBOWN.user_id AS owner_id, U.name AS owner_name, " +
+		    "COUNT(BLKDEV.device_id) AS total_devices " +
+		    "FROM block_device AS BLKDEV " +
+		    "LEFT JOIN building_block AS BB ON BB.build_block_id = BLKDEV.building_block_id " +
+		    "LEFT JOIN block AS BLK ON BLK.block_id = BB.block_id " +
+		    "LEFT JOIN building_block_ownership AS BBOWN ON BBOWN.building_block_id = BLKDEV.building_block_id " +
+		    "LEFT JOIN users AS U ON U.id = BBOWN.user_id " +
+		    "WHERE BB.building_id = ? " +
+		    "GROUP BY BB.building_id, BB.block_id, BBOWN.user_id, U.name";
+
+	private static String GET_BUILDING_LIST = "SELECT * FROM building WHERE created_by = ?";
 	
-	
-	 String BUILDING_LIST_QUERY = "SELECT building_id, name, location FROM building WHERE createdBy = ?";
-	
-	 public Boolean createBuilding(List<Building> buildings) {
+	 public Boolean createBuilding(List<Building> buildings , Integer userId) {
 
 	        try (Connection conn = DBConnectionPool.getConnection()) {
 	            conn.setAutoCommit(false);
@@ -33,7 +32,7 @@ public class BuildingDao {
 	                for (Building building : buildings) {
 	                    stmt.setString(1, building.getBuildingName());
 	                    stmt.setString(2, building.getBuildingLocation());
-	                    stmt.setInt(3, building.getCreatedBy());
+	                    stmt.setInt(3, userId);
 	                    stmt.addBatch();
 	                }
 
@@ -103,7 +102,7 @@ public class BuildingDao {
 
 
 	        try (Connection conn = DBConnectionPool.getConnection();
-	             PreparedStatement stmt = conn.prepareStatement(BUILDING_LIST_QUERY)) {
+	             PreparedStatement stmt = conn.prepareStatement(GET_BUILDING_LIST)) {
 
 	            stmt.setInt(1, userId);
 

@@ -8,11 +8,16 @@ import jakarta.servlet.http.HttpServletResponse;
 
 class Message {
 	private Integer code;
-	private String data = "Error";
+	private String message;
+	private String data;
 	
 	public void setCode(Integer code) {
 		this.code = code;
+		if(code == 200)
+			message = "success";
+		else message = "error";
 	}
+	
 	
 	public void setMessage(String message) {
 		this.data = message;
@@ -22,6 +27,7 @@ class Message {
 public class MessageBuilder {
 	
 	HttpServletResponse response;
+	public final  String DEFAULT_INVALID_URL = "Enter valid url";
 	
 	public MessageBuilder(HttpServletResponse response) {
 		this.response = response;

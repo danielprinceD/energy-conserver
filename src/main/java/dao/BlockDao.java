@@ -17,12 +17,12 @@ public class BlockDao {
             "WHERE B_BLK.block_id = ?";
 	
 	 public List<Device> getBlockDevices(Integer blockId) {
-	        List<Device> devices = new ArrayList<Device>();
-
 	        
+		 List<Device> devices = new ArrayList<Device>();
 
-	        try (Connection conn = DBConnectionPool.getConnection();
-	             PreparedStatement stmt = conn.prepareStatement(COLLECT_DEVICE_LIST_QUERY)) {
+	     try (Connection conn = DBConnectionPool.getConnection();
+	    		
+	    		PreparedStatement stmt = conn.prepareStatement(COLLECT_DEVICE_LIST_QUERY)) {
 
 	            stmt.setInt(1, blockId);
 
@@ -40,80 +40,70 @@ public class BlockDao {
 	            }
 
 	        } catch (SQLException e) {
-	            e.printStackTrace(); // Handle SQL exceptions (you may want to log this)
+	            e.printStackTrace();
 	        }
 
 	        return devices;
 	    }
 	
+	 
 	 public Boolean createBlockForBuildingId(Integer buildingId, List<Block> blocks) {
-		    Connection conn = null;
-		    PreparedStatement stmtBlockInsert = null;
-		    PreparedStatement stmtBuildBlockInsert = null;
-		    PreparedStatement stmtOwnershipInsert = null;
-		    
 		    String insertBlockQuery = "INSERT INTO block(name) VALUES(?)";
-		    String selectBuildBlockQuery = "SELECT build_block_id FROM building_block WHERE building_id = ? AND block_id = ?";
-		    String insertOwnershipQuery = "INSERT INTO building_block_ownership (build_block_id, user_id) VALUES (?, ?)";
+		    String insertBuildingBlockQuery = "INSERT INTO building_block (building_id, block_id) VALUES(?, ?)";
+		    String insertOwnershipQuery = "INSERT INTO building_block_ownership (building_block_id, user_id) VALUES (?, ?)";
 
-		    try {
-		    	
-		        conn = DBConnectionPool.getConnection();
-		        conn.setAutoCommit(false);
+		    try (Connection conn = DBConnectionPool.getConnection()) {
+		        conn.setAutoCommit(false); // Start transaction
 
 		        for (Block block : blocks) {
-		        	
-		            stmtBlockInsert = conn.prepareStatement(insertBlockQuery, Statement.RETURN_GENERATED_KEYS);
-		            stmtBlockInsert.setString(1, block.getBlockName());
-		            stmtBlockInsert.executeUpdate();
+		            // Insert into the block table
+		            try (PreparedStatement stmtBlockInsert = conn.prepareStatement(insertBlockQuery, Statement.RETURN_GENERATED_KEYS)) {
+		                stmtBlockInsert.setString(1, block.getBlockName());
+		                stmtBlockInsert.executeUpdate();
 
-		            ResultSet rs = stmtBlockInsert.getGeneratedKeys();
-		            int generatedBlockId = 0;
-		            if (rs.next()) {
-		                generatedBlockId = rs.getInt(1);
+		                // Get the generated block_id for the block inserted
+		                ResultSet rs = stmtBlockInsert.getGeneratedKeys();
+		                int generatedBlockId = 0;
+		                if (rs.next()) {
+		                    generatedBlockId = rs.getInt(1);
+		                }
+
+		                // Insert into the building_block table
+		                try (PreparedStatement stmtBuildingBlockInsert = conn.prepareStatement(insertBuildingBlockQuery, Statement.RETURN_GENERATED_KEYS)) {
+		                    stmtBuildingBlockInsert.setInt(1, buildingId);
+		                    stmtBuildingBlockInsert.setInt(2, generatedBlockId);
+		                    stmtBuildingBlockInsert.executeUpdate();
+
+		                    // Get the generated building_block_id
+		                    ResultSet rsBB = stmtBuildingBlockInsert.getGeneratedKeys();
+		                    int generatedBBId = 0;
+		                    if (rsBB.next()) {
+		                        generatedBBId = rsBB.getInt(1);
+		                    }
+
+		                    // Insert into the building_block_ownership table
+		                    try (PreparedStatement stmtOwnershipInsert = conn.prepareStatement(insertOwnershipQuery)) {
+		                        stmtOwnershipInsert.setInt(1, generatedBBId); // Use the generated building_block_id
+		                        stmtOwnershipInsert.setInt(2, block.getOwnerId());
+		                        stmtOwnershipInsert.executeUpdate();
+		                    }
+		                }
+		            } catch (SQLException e) {
+		                conn.rollback(); // Rollback the transaction in case of an error
+		                e.printStackTrace();
+		                return false;
 		            }
-
-		            stmtBuildBlockInsert = conn.prepareStatement(selectBuildBlockQuery);
-		            stmtBuildBlockInsert.setInt(1, buildingId);
-		            stmtBuildBlockInsert.setInt(2, generatedBlockId);
-		            ResultSet buildBlockResult = stmtBuildBlockInsert.executeQuery();
-
-		            int buildBlockId = 0;
-		            if (buildBlockResult.next()) {
-		                buildBlockId = buildBlockResult.getInt("build_block_id");
-		            }
-
-		            stmtOwnershipInsert = conn.prepareStatement(insertOwnershipQuery);
-		            stmtOwnershipInsert.setInt(1, buildBlockId);
-		            stmtOwnershipInsert.setInt(2, block.getOwnerId());
-		            stmtOwnershipInsert.executeUpdate();
 		        }
 
-		        conn.commit();
+		        conn.commit(); // Commit transaction if all queries are successful
 		        return true;
 
 		    } catch (SQLException e) {
 		        e.printStackTrace();
-		        try {
-		            if (conn != null) {
-		                conn.rollback();
-		            }
-		        } catch (SQLException se) {
-		            se.printStackTrace();
-		        }
 		        return false;
-		    } finally {
-		        try {
-		            if (stmtBlockInsert != null) stmtBlockInsert.close();
-		            if (stmtBuildBlockInsert != null) stmtBuildBlockInsert.close();
-		            if (stmtOwnershipInsert != null) stmtOwnershipInsert.close();
-		            if (conn != null) conn.close();
-		        } catch (SQLException e) {
-		            e.printStackTrace();
-		        }
 		    }
 		}
+
 	 
 }
-
 
