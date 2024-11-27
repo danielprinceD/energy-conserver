@@ -9,15 +9,17 @@ import vo.User;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.google.gson.Gson;
 
 import Builder.JSONBuilder;
 import Builder.MessageBuilder;
+import Builder.PatternBuilder;
 import dao.UserDao;
 
 
-@WebServlet("/users")
+@WebServlet( {  "/users" }  )
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -28,6 +30,13 @@ public class UserServlet extends HttpServlet {
 		MessageBuilder messageBuilder = new MessageBuilder(response);
 		
 		String jsonString = new JSONBuilder().generateJson(request).build();
+		String ownerParam = request.getParameter("owner");
+		
+		if(ownerParam.equals("true")) {
+			List<User> result = userDao.getAllUsers();
+			messageBuilder.set(200, new Gson().toJson(result));
+			return;
+		}
 		
 		User user = new Gson().fromJson(jsonString, User.class);
 		

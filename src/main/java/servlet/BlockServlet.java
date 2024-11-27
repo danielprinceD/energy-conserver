@@ -32,6 +32,7 @@ public class BlockServlet extends HttpServlet {
 		MessageBuilder messageBuilder = new MessageBuilder(response);
 		
 		if(patternBuilder.getGroupCount() == 1) {
+			
 			Integer blockId = Integer.parseInt( patternBuilder.group(1) );
 			List<Device> blockDevices = blockDao.getBlockDevices(blockId);
 			

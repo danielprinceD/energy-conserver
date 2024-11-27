@@ -1,6 +1,8 @@
 package dao;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.*;
 
 import DatabaseUtils.DBConnectionPool;
@@ -8,8 +10,9 @@ import vo.User;
 
 public class UserDao {
 	
-	private String LOGIN_QUERY = "SELECT id FROM users where name = ? AND password = ?";
-	private String REGISTER_QUERY = "INSERT INTO users (name, password) VALUES (?, ?)";
+	private final String LOGIN_QUERY = "SELECT id FROM users where name = ? AND password = ?";
+	private final String REGISTER_QUERY = "INSERT INTO users (name, password) VALUES (?, ?)";
+	private final String ALL_USERS_QUERY = "SELECT id, name FROM users"; 
 	
 	public User loginUser(User user) throws SQLException {
 		
@@ -26,10 +29,32 @@ public class UserDao {
                 user.setId(userId);
                 return user;
             }
-        
 	   }
 		return null;
 	}
+	
+	public List<User> getAllUsers() {
+	    List<User> users = new ArrayList<User>();
+	    
+	    
+	    try (Connection conn = DBConnectionPool.getConnection(); 
+	         PreparedStatement stmt = conn.prepareStatement(ALL_USERS_QUERY); 
+	         ResultSet rs = stmt.executeQuery()) {
+	        
+	        while (rs.next()) {
+	            User user = new User();
+	            user.setId(rs.getInt("id"));
+	            user.setUserName(rs.getString("name"));
+	            
+	            users.add(user);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace(); 
+	    }
+	    
+	    return users;
+	}
+
 	
 	
 	public Boolean registerUser(User user) throws SQLException {
