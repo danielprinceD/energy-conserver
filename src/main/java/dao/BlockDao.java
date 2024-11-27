@@ -12,9 +12,8 @@ public class BlockDao {
 	
 	private final String COLLECT_DEVICE_LIST_QUERY = "SELECT B_DEV.device_id, D.name  " +
             "FROM block_device AS B_DEV " +
-            "LEFT JOIN building_block AS B_BLK ON B_BLK.build_block_id = B_DEV.building_block_id " +
             "LEFT JOIN device AS D ON D.device_id = B_DEV.device_id " +
-            "WHERE B_BLK.block_id = ?";
+            "WHERE B_DEV.block_id = ?";
 	
 	 public List<Device> getBlockDevices(Integer blockId) {
 	        
@@ -33,7 +32,6 @@ public class BlockDao {
 	                    Device device = new Device();
 	                    device.setDeviceId(rs.getInt("device_id"));
 	                    device.setDeviceName(rs.getString("name"));
-	                    device.setBlockId(rs.getInt("block_id"));
 
 	                    devices.add(device);
 	                }
